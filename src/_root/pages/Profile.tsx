@@ -24,7 +24,6 @@ const Profile = () => {
 
   const { data: currentUser } = useGetUserById(id || "");
 
-  console.log("currentUser:", currentUser);
   if (!currentUser) {
     return (
       <div className="flex-center w-full h-full">
