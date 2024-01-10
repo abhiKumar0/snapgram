@@ -1,10 +1,16 @@
-import { Loader, PostCard } from '@/components/shared';
-import { useGetRecentPosts } from '@/lib/react-query/queries';
+import { Loader, PostCard, UserCard } from '@/components/shared';
+import { toast } from '@/components/ui';
+import { useGetRecentPosts, useGetUsers } from '@/lib/react-query/queries';
 import { Models } from 'appwrite';
 
 const Home = () => {
   const { data: posts, isPending: isPostLoading, isError: isErrorPosts } = useGetRecentPosts();
 
+  const { data: users, isPending: isUserLoading, isError: isErrorUsers} = useGetUsers();
+
+  if (isErrorUsers || isErrorPosts) {
+    toast({ title: "Something went wring."})
+  }
 
   return (
     <div className='flex flex-1'>
@@ -16,11 +22,23 @@ const Home = () => {
           ) : (
             <ul className='flex flex-col flex-1 gap-9 w-full'>
               {posts?.documents.map((post: Models.Document) => (
-                <PostCard post={post} />
+                <PostCard key={post.$id} post={post} />
               ))}
             </ul>
           )}
         </div>
+      </div>
+      <div className='home-creators'>
+        <h3 className='h3-bold text-light-1'>Top Creator</h3>
+        {isUserLoading && !users ? (
+          <Loader />
+        ) : (
+          <ul className='flex flex-col'>
+            {users?.documents.map((user) => (
+              <UserCard key={user.$id} user={user} />
+            ))}
+          </ul>
+        )}
       </div>
     </div>
   )

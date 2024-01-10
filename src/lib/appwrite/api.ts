@@ -74,7 +74,6 @@ export async function getAccount() {
   }
 }
 
-
 // ============================== GET USER
 export async function getCurrentUser() {
   try {
@@ -96,7 +95,6 @@ export async function getCurrentUser() {
     return null;
   }
 }
-
 
 export async function signOutAccount() {
   try {
@@ -218,7 +216,6 @@ export async function updatePost(post: IUpdatePost) {
     console.log(error);
   }
 }
-
 
 //***************** UPLOAD FILE ****************
 export async function uploadFile(file: File) {
@@ -368,7 +365,7 @@ export async function deletePost(postId: string, imageId: string) {
 
 export async function getInfinitePosts({ pageParam } : { pageParam: number}) {
 
-  const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(10)];
+  const queries: any[] = [Query.orderDesc('$updatedAt'), Query.limit(3)];
 
   if (pageParam) {
     queries.push(Query.cursorAfter(pageParam.toString()));
@@ -404,3 +401,46 @@ export async function searchPosts(searchTerm: string) {
     console.log(error)
   }
 }
+
+export async function getUsers() {
+  try {
+    const users = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      [Query.orderDesc("$createdAt"), Query.limit(10)]
+    );
+
+    if (!users) throw Error;
+
+    return users;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export async function getUserById (userId: string) {
+  try {
+    const user = await databases.getDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.userCollectionId,
+      userId
+    );
+    if (!user) throw Error;
+
+    return user;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+// export async function updateProfile(user: IUpdateUser) {
+//   try {
+//     const uploadedFile = await uploadFile(user.imageUrl);
+    
+//   } catch (error) {
+//     console.log(error);
+//   }
+// } Query.equal("title", ["Iron Man"])
+
