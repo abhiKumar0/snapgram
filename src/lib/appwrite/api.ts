@@ -493,3 +493,24 @@ export async function updateUser(user: IUpdateUser) {
   }
 } 
 
+export async function getUserPosts(userId?: string) {
+
+  if (!userId) return;
+
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postCollectionId,
+      [
+        Query.equal("creator", userId),
+        Query.orderDesc("$createdAt")
+      ]
+    );
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+  }
+}

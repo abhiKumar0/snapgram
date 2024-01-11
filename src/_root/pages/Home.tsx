@@ -33,7 +33,7 @@ const Home = () => {
         {isUserLoading && !users ? (
           <Loader />
         ) : (
-          <ul className='flex flex-col'>
+          <ul className='flex flex-col gap-2'>
             {users?.documents.map((user) => (
               <UserCard key={user.$id} user={user} />
             ))}
