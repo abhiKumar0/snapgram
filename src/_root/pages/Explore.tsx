@@ -3,7 +3,7 @@ import SearchResults from "@/components/shared/SearchResults";
 import { Input } from "@/components/ui"
 import useDebounce from "@/hooks/useDebounce";
 import { useGetInfinitePosts, useSearchPosts } from "@/lib/react-query/queries";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useInView } from 'react-intersection-observer';
 
 
@@ -15,7 +15,9 @@ const Explore = () => {
   const { data: searchedPosts, isFetching: isSearchFetching} = useSearchPosts(debouncedValue);
 
   useEffect(() => {
-    if (inView && !searchValue) fetchNextPage();
+    if (inView && !searchValue) {
+      fetchNextPage();
+    }
   }, [inView, searchValue])
 
   if (!posts) {
@@ -27,7 +29,7 @@ const Explore = () => {
   }
 
   const shouldShowSearchResults = searchValue !== '';
-  const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item) => item.documents.length === 0);
+  const shouldShowPosts = !shouldShowSearchResults && posts.pages.every((item) => item?.documents.length === 0);
 
   return (
     <div className="explore-container">
@@ -73,7 +75,7 @@ const Explore = () => {
         ) : shouldShowPosts ? (
           <p className="text-light-4 mt-10 text-center w-full">End of posts</p>
         ) : posts.pages.map((item, index) => (
-          <GridPostList key={`page-${index}`} posts={item.documents} />
+          <GridPostList key={`page-${index}`} posts={item?.documents} />
         ))}
       </div>
       {hasNextPage && !searchValue && (

@@ -20,9 +20,9 @@ export const PostValidation = z.object({
 })
 
 export const UserValidation = z.object({
-  name: z.string().min(2).max(100),
-  username: z.string().min(2).max(100),
-  email: z.string().email(),
-  bio: z.string().max(2200),
   file: z.custom<File[]>(),
-})
+  name: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  username: z.string().min(2, { message: "Name must be at least 2 characters." }),
+  email: z.string().email(),
+  bio: z.string(),
+});

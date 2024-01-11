@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { INewPost, INewUser, IUpdatePost, IUpdateUser } from '@/types';
 import {
   useQuery,
@@ -172,16 +173,20 @@ export const useDeletePost = () => {
 export const useGetInfinitePosts = () => {
   return useInfiniteQuery({
     queryKey: [QUERY_KEYS.GET_INFINITE_POSTS],
-    queryFn: getInfinitePosts,
-    getNextPageParam: (lastPage) => {
-      if (lastPage && lastPage.documents.length === 0) return null;
+    queryFn: getInfinitePosts as any,
+    getNextPageParam: (lastPage: any) => {
+      // If there's no data, there are no more pages.
+      if (lastPage && lastPage.documents.length === 0) {
+        return null;
+      }
 
-      const lastId = lastPage?.documents[lastPage?.documents.length - 1].$id;
-
+      // Use the $id of the last document as the cursor.
+      const lastId = lastPage.documents[lastPage.documents.length - 1].$id;
       return lastId;
-    }
-  })
-}
+    },
+    initialPageParam: null,
+  });
+};
 
 export const useSearchPosts = (searchTerm: string) => {
   return useQuery({
@@ -191,17 +196,18 @@ export const useSearchPosts = (searchTerm: string) => {
   })
 }
 
-export const useGetUsers = (limit?: number) => {
+export const useGetUsers = () => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USERS],
-    queryFn:() => getUsers(limit),
+    queryFn: getUsers,
   })
 }
 
 export const useGetUserById = (userId: string) => {
   return useQuery({
     queryKey: [QUERY_KEYS.GET_USER_BY_ID, userId],
-    queryFn: () => getUserById(userId)
+    queryFn: () => getUserById(userId),
+    enabled: !!userId
   })
 }
 
